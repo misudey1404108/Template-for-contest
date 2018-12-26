@@ -1,0 +1,41 @@
+### set:
+*set<int> s;// keeps sorted data in increasing,avoids multiple value
+*multiset<int>ms;// same+ keep multiple value
+*ms.count(6) gives how many times 6 has in ms.
+*s.insert(10); ms.insert(13);
+*s.find(13)// to check is 13 has in the set
+*ms.find(17)// kuje na pele end() pointer return kore
+*s.erase(10); ms.erase(10);// joto gula 10 ase sob muce jabe.
+ms.erase(ms.find(10))// sudu matro prothom 10 ta mucbe
+//lower bound(5) returns first element equal to or greater than 5;
+//upper bound(5) returns last element greater than 5;
+*for(set<int>::iterator it=s.begin();it!=s.end();it++) cout<<*it;
+
+/// ternary search
+
+double lo=0,hi=1e9;
+fr(i,1,100)// depends on tym
+{
+     double x1=(2*lo+hi)/3;
+     double x2=(lo+2*hi)/3;
+
+     if(check(x1)<=check(x2)+eps)
+     {
+            hi=x2;
+     }
+     else lo=x1;
+}
+
+### map
+ // reverse iterator
+ map<ll,ll>::reverse_iterator it;
+
+ for(it=m.rbegin();it!=m.rend();it++)
+ // erase
+   m.erase(m.find(a[i]));
+   m.erase(it);
+ // count
+   m.count(x) to check if there is any m[x]>=0
+
+            
+

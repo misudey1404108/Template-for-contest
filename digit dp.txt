@@ -1,0 +1,113 @@
+### Varriation 1.
+/// Finding sum of digits from a to b where a,b<=1e9
+
+vector<ll>A;
+ll cnt;
+void get(ll p)
+{
+    if(!p) {A.pb(0); cnt++;}
+    while(p) {A.pb(p%10); p/=10; cnt++;}
+    reverse(A.begin(),A.end());
+}
+ll dp[10][2][100];
+ll get_sum(ll indx,ll flag,ll sum)
+{
+    //cout<<indx<<' '<<"index:"<<' '<<A[indx]<<' '<<flag<<' '<<sum<<endl;
+    if(indx==cnt) return sum;
+    if(dp[indx][flag][sum]!=-1) return dp[indx][flag][sum];
+    ll limit,ans=0;
+    if(flag==1) limit=A[indx];
+    else limit=9;
+    ll start=0;
+    for(ll i=start;i<=limit;i++)
+    {
+        ll lim;
+        if(flag==1)
+            lim= (i < A[indx] ) ? 0 : 1;
+        else lim=0;
+        ans+=get_sum(indx+1, lim, sum+i);
+    }
+    return dp[indx][flag][sum]=ans;
+}
+int main()
+{
+    ll a,b;
+    while( scanf ("%lld%lld",&a,&b ) ==2 )
+    {
+        if(a==-1 && b==-1) break;
+        memset(dp,-1,sizeof(dp));
+        get(b); //cout<<cnt<<endl;
+        ll ans1=get_sum(0,1,0LL);
+        A.clear(); cnt=0;
+        memset(dp,-1,sizeof(dp));
+        get(a-1);
+        ll ans2=get_sum(0,1,0LL);
+       A.clear(); cnt=0;
+        //cout<<ans2<<' '<<ans1<<endl;
+        printf("%lld\n",ans1-ans2);
+   }
+}
+
+### Variation 2.
+/// How many numbers are in the segment [a,b] which is divisible by n and even position of 
+    decimal representation of numbers contains only digit k.
+    here a,b has same size and can contain digits upto 2000
+
+ll n,k;
+string s1,s2;
+ll dp[2001][2001][2][2];
+ll call(ll pos,ll rem,ll f1,ll f2) /// f1 for not small than s1, f2 for not greater than s2
+{
+    /// base condition
+    if(pos==s1.size())
+    {
+        if(!rem) return 1;
+        else return 0;
+    }
+    if(dp[pos][rem][f1][f2]!=-1) return dp[pos][rem][f1][f2];
+    ll ans=0; ll tmp1=s1[pos]-'0'; ll tmp2=s2[pos]-'0';
+    ll f11=f1,f22=f2;
+    ll val;
+    /// recursive condition
+    /// for odd position must place digit k
+    if(pos&1)
+    {
+        ll st=0,en=9;
+        if(!f11) st=tmp1;
+        if(!f22) en=tmp2;
+        if( ! (k>=st && k<=en) ) return ans;
+	if(!f22 && k<tmp2 ) f22=1;
+        if(!f11 && k>tmp1 ) f11=1;
+        val=(rem*10)+k;
+        val%=n;
+        ans+=call(pos+1,val,f11,f22);
+        ans%=mod;
+    }
+    /// for even position we need to check for digits
+    else
+    {
+        ll st=0,en=9;
+        if(!f11) st=tmp1;
+        if(!f22) en=tmp2;
+        for(ll i=st;i<=en;i++)
+        {
+            f11=f1; f22=f2; val=rem;
+            if(i==k) continue;
+            if(!f22 && i<tmp2 ) f22=1;
+            if(!f11 && i>tmp1 ) f11=1;
+            val=(rem*10)+i;
+            val%=n;
+            ans+=call(pos+1,val,f11,f22);
+            ans%=mod;
+        }
+    }
+    return dp[pos][rem][f1][f2]=ans;
+}
+int main()
+{
+    cin>>n>>k;
+    cin>>s1;
+    cin>>s2;
+    memset(dp,-1,sizeof(dp));
+    cout<<call(0,0,0,0);
+}

@@ -1,0 +1,261 @@
+/// finding diameter of a tree
+vector<ll>tmp;
+ll d_to_s[10010],emne_dist[10010],vis[10010];
+vector<ll>V[10010];
+ll mx=0,des=-1;
+void dfs1(ll node)
+{
+    vis[node]=1;
+    tmp.pb(node);
+    for(auto vp:V[node])
+    {
+        if(!vis[vp])
+        {
+            emne_dist[vp]=emne_dist[node]+1;
+            dfs1(vp);
+        }
+    }
+    if(emne_dist[node]>mx)
+    {
+        mx=emne_dist[node];
+        des=node;
+    }
+}
+void dfs2(ll node)
+{
+    vis[node]=1;
+    for(ll j=0;j<V[node].size();j++)
+    {
+        ll vp=V[node][j];
+        if(!vis[vp])
+        {
+            d_to_s[vp]=d_to_s[node]+1;
+            dfs2(vp);
+        }
+    }
+    if(d_to_s[node]>mx) mx=d_to_s[node], des=node;
+}
+void find_diameter(ll node)
+{
+   mx=0;
+   des=-1;
+   emne_dist[node]=0;
+   dfs1(node);
+   
+   for(ll j=0;j<tmp.size();j++) vis[tmp[j]]=0;
+   mx=0;
+   d_to_s[des]=0;
+   dfs2(des);
+   cout<<mx<<endl;
+
+}
+
+/// finding center of a tree
+ Solution Procedure : The center of the tree will be lying within the longest diameter path.(Believe me :p)
+                      first find diameter of a tree. Then dfs from source and find out distance of every node from source.
+                      If for any node distance from destination is diamater/2 && distance from source is diameter-diameter/2
+                      then it is center of that tree. Remember center can be two node if diameter is odd.
+                      Must do dfs from source. Otherwise wrong center will be found.
+
+vector<ll>tmp;
+ll d_to_s[10010],emne_dist[10010],vis[10010],s_to_d[10010];
+vector<ll>V[10010];
+ll mx=0,des=-1;
+void dfs1(ll node)
+{
+    vis[node]=1;
+    tmp.pb(node);
+    for(auto vp:V[node])
+    {
+        if(!vis[vp])
+        {
+            emne_dist[vp]=emne_dist[node]+1;
+            dfs1(vp);
+        }
+    }
+    if(emne_dist[node]>mx)
+    {
+        mx=emne_dist[node];
+        des=node;
+    }
+}
+void dfs2(ll node)
+{
+    vis[node]=1;
+    for(ll j=0;j<V[node].size();j++)
+    {
+        ll vp=V[node][j];
+        if(!vis[vp])
+        {
+            d_to_s[vp]=d_to_s[node]+1;
+            dfs2(vp);
+        }
+    }
+    if(d_to_s[node]>mx) mx=d_to_s[node], des=node;
+}
+void find_diameter(ll node)
+{
+   mx=0;
+   des=-1;
+   emne_dist[node]=0;
+   dfs1(node);
+   
+   for(ll j=0;j<tmp.size();j++) vis[tmp[j]]=0;
+   mx=0;
+   d_to_s[des]=0;
+   dfs2(des);
+   cout<<mx<<endl;
+
+}
+void dfs3(ll node)
+{
+    vis[node]=1;
+    for(ll j=0;j<V[node].size();j++)
+    {
+        ll vp=V[node][j];
+        if(!vis[vp])
+        {
+            s_to_d[vp]=s_to_d[node]+1;
+            dfs3(vp);
+        }
+    }
+}
+
+void find_center(ll node)
+{
+
+   find_diameter(node);
+
+   /// finding out distance from source node of everynode
+
+   for(ll j=0;j<tmp.size();j++) vis[tmp[j]]=0;
+   mx=0;
+   s_to_d[des]=0;
+   dfs3(des);
+
+   /// finding center of that tree
+
+   for(ll j=0;j<tmp.size();j++)
+   {
+         //cout<<tmp[j]<<' '<<dtos[tmp[j]]<<endl;
+          if(d_to_s[tmp[j]]==mx/2LL && s_to_d[tmp[j]]==(mx-mx/2LL)) { cout<<tmp[j]<<endl; break;}
+   }
+   tmp.clear();
+
+}
+
+/// Given a tree (a connected graph with no cycles), you have to find the cost to go to the farthest node from each node.
+    The edges of the tree are weighted and undirected.
+
+vector<pll>V[30010];
+ll vis[30010];
+ll s_to_d[30010],d_to_s[30010],emne_dist[30010];
+ll des=-1,mx=0;
+vector<ll>tmp;
+void dfs1(ll node)
+{
+    vis[node]=1;
+    tmp.pb(node);
+    for(ll j=0;j<V[node].size();j++)
+    {
+        pll vp=V[node][j];
+        if(!vis[vp.F])
+        {
+            emne_dist[vp.F]=emne_dist[node]+vp.S;
+            dfs1(vp.F);
+        }
+    }
+    if(emne_dist[node]>mx)
+    {
+        mx=emne_dist[node];
+        des=node;
+    }
+}
+void dfs2(ll node)
+{
+    vis[node]=1;
+    //tmp.pb(node);
+    for(ll j=0;j<V[node].size();j++)
+    {
+        pll vp=V[node][j];
+        if(!vis[vp.F])
+        {
+            d_to_s[vp.F]=d_to_s[node]+vp.S;
+            dfs2(vp.F);
+        }
+    }
+    if(d_to_s[node]>mx) mx=d_to_s[node], des=node;
+}
+void find_diameter(ll node)
+{
+   mx=0;
+   des=-1;
+   emne_dist[node]=0;
+   dfs1(node);
+
+   for(ll j=0;j<tmp.size();j++) vis[tmp[j]]=0;
+   mx=0;
+   d_to_s[des]=0;
+   dfs2(des);
+   //cout<<mx<<endl;
+
+}
+void dfs3(ll node)
+{
+    vis[node]=1;
+    //tmp.pb(node);
+    for(ll j=0;j<V[node].size();j++)
+    {
+        pll vp=V[node][j];
+        if(!vis[vp.F])
+        {
+            s_to_d[vp.F]=s_to_d[node]+vp.S;
+            dfs3(vp.F);
+        }
+    }
+}
+
+/// farthest distance of each node will be maximum of distance from source to that node and destination to that node
+
+int main()
+{
+    fast();
+    ll t; scanf("%lld",&t);
+    for(ll cs=1;cs<=t;cs++)
+    {
+        ll n; scanf("%lld",&n);
+        for(ll i=0;i<n;i++)
+        {
+            vis[i]=0; emne_dist[i]=0;
+            d_to_s[i]=0; s_to_d[i]=0;
+            V[i].clear();
+        }
+        for(ll i=1;i<n;i++)
+        {
+            ll u,v,w;
+            scanf("%lld %lld %lld",&u,&v,&w);
+            V[u].pb( mp(v,w) );
+            V[v].pb( mp(u,w) );
+        }
+        find_diameter(0);
+
+        for(ll j=0;j<tmp.size();j++) vis[tmp[j]]=0;
+        mx=0;
+        s_to_d[des]=0;
+        dfs3(des);
+
+        printf("Case %lld:\n",cs);
+
+        for(ll i=0;i<n;i++) printf( "%lld\n",max(s_to_d[i],d_to_s[i]) );
+        tmp.clear();
+
+    }
+
+}
+
+
+
+
+
+
+

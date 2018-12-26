@@ -1,0 +1,95 @@
+### lazy without propogation
+int toggle[4*n];
+void make(int at, int L, int R)
+{
+  if(L == R)
+  {
+    toggle[at] = a[L];
+    return ;
+  }
+  int mid = (L + R)/2;
+  make(at*2, L, mid );
+  make(at*2+1, mid+1, R);
+
+  toggle[at] = toggle[at * 2] ^ toggle[at * 2 + 1];
+}
+void update(int at, int L, int R, int l, int r)
+{
+ 
+ if(r < L || R < l) return;
+ if(l <= L && R <= r) {/* toggle[at] ^= 1;*/ return;}
+
+ int mid = (L + R)/2;
+ update(at * 2, L, mid, l, r);
+ update(at * 2 + 1, mid + 1, R, l, r);
+  toggle[at] = toggle[at * 2] ^ toggle[at * 2 + 1];
+
+}
+int qurery(int at, int L, int R, int pos)
+{
+ if(pos < L || R < pos) return 0;
+ if(L <= pos && pos <= R) return /*toggle[at]*/;
+
+ int mid = (L + R)/2;
+ if(pos <= mid) return query(at * 2, L, mid, pos); 
+ else return query(at * 2 + 1, mid + 1, R, pos);
+ }
+
+### lazy propogation
+
+ll bit[4*n],lazy[4*n];
+ll a[n+1];
+
+void make(int at, int L, int R)
+{
+  if(L == R)
+  {
+    bit[at] = a[L];
+    return ;
+  }
+  int mid = (L + R)/2;
+  make(at*2, L, mid );
+  make(at*2+1, mid+1, R);
+
+  bit[at] = min( bit[at * 2] , bit[at * 2 + 1] );
+}
+void propogate(int at)
+{
+
+    lazy[at*2]+=lazy[at];
+    lazy[at*2+1]+=lazy[at];
+    lazy[at]=0;
+
+}
+/// call update with(1,1,n,l,r,val)
+void update(int at, int L, int R, int l, int r, int val)
+{
+
+ if(r < L || R < l) return;
+ if(l <= L && R <= r) {  lazy[at]+=val; return;}
+
+ if(lazy[at]) propogate(at);
+
+ int mid = (L + R)/2;
+ update(at * 2, L, mid, l, r, val);
+ update(at * 2 + 1, mid + 1, R, l, r, val);
+  bit[at] = min(bit[at * 2] +lazy[at*2] , bit[at * 2 + 1] +lazy[at*2+1]);
+
+}
+/// call query with (1,1,n,l,r)
+int query(int at, int L, int R, int l, int r)
+{
+ if(r < L || R < l) return INT_MAX;
+ if(l <= L && R <= r) return bit[at]+lazy[at];
+
+ if(lazy[at]) propogate(at);
+
+ int mid = (L + R)/2;
+ bit[at] = min(bit[at * 2] +lazy[at*2] , bit[at * 2 + 1] +lazy[at*2+1]);
+
+ return min(
+  query(at * 2, L, mid, l, r),
+  query(at * 2 + 1, mid + 1, R, l, r) );
+ }
+
+ 

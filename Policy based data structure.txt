@@ -1,0 +1,27 @@
+/// Like Set
+#include <ext/pb_ds/assoc_container.hpp> 
+#include <ext/pb_ds/tree_policy.hpp>
+#include <functional> // for less
+#include <iostream>
+using namespace __gnu_pbds;
+using namespace std;
+typedef tree<int, null_type, less<int>, rb_tree_tag,
+             tree_order_statistics_node_update>
+    orderedSet;
+
+//declare
+orderedSet s;
+orderedSet::iterator it;
+
+//insert,erase,size like set
+
+//find_by_order is used to find kth element
+it=s.find_by_order(k-1);
+
+//order_of_key is used to find kth element index. If present in the set,showed index of it,(0 based addressing),otherwise
+ it will show the index number if it was there in sorted array.
+ i.e, there are 3,4,5 is present in set. if we look for order_of_key(6) we will get 3,
+	if we look for order_of_key(2) we will get 0.
+// Order of key is also used how many numbers less than k is present in the set.
+cout<< p.order_of_key(k)<<endl;
+

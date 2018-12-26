@@ -1,0 +1,34 @@
+priority_queue<int, vector<int>, greater<int> >pq;
+
+vector<ll>V[100005];
+ll ans[100005];
+ll degree[100005];
+
+void topo()
+{
+    frl(i,1,n)
+    {
+        if(!degree[i]) pq.push(i);
+    }
+    ll ck=0;
+    while(!pq.empty())
+    {
+        ll tmp=pq.top();
+        pq.pop();
+        ck++;
+        ans[ck]=tmp;
+        if(V[tmp].size())
+        frl(i,0,V[tmp].size()-1)
+        {
+            ll vp=V[tmp][i];
+            degree[vp]--;
+            if(!degree[vp])
+            {
+                pq.push(vp);
+            }
+        }
+    }
+    /// print ans array which is in which oder we will do the work
+    /// the work is lexicographically smallest order as we used priority queue in increasing way
+    ///if(ck!=n) that maeans we cant do the work in any order
+}

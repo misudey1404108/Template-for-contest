@@ -1,0 +1,91 @@
+##Floyd-Warshall
+
+Floyd-Warshal algorithm is an all-pairs shortest path algorithm using dynamic programming.
+Floyd-Warshal()
+#Main Code:
+   d[v][u] = inf for each pair (v,u)
+   d[v][v] = 0 for each vertex v
+   next[i][j]=0 for each pair(i,j) // means i theke j node e jete hole next kon node e jaowa lagbe.
+   for k = 1 to n
+	for i = 1 to n
+	  for j = 1 to n
+            if(d[i][k] + d[k][j] < d[i][j])
+	      d[i][j] = d[i][k] + d[k][j], next[i][j]=next[i][k];
+#FindPath(i,j)
+  path=i;
+  print path;
+  while(path!=j)
+  {
+    path=next[path][j];
+    print path;
+  }
+
+Time complexity : O(n3).
+
+###Minimum cost spanning tree
+1.Cruscal Algo
+
+***
+ll rep[1000];
+ll sum=0;
+struct edge
+{
+    int u,v,cost;
+};
+bool cmp(edge a, edge b)
+{
+    return a.cost<b.cost;
+}
+vector<edge>V;
+ll find_rep(ll i)
+{
+    if(rep[i]==i)
+        return i;
+    return rep[i]=find_rep(rep[i]);
+}
+
+void mst(ll n)
+{
+    ll cnt=0;
+    for(ll i=1;i<=n;i++)
+        rep[i]=i;
+    sort(V.begin(),V.end(),cmp);
+    for(ll j=0;j<V.size();j++)
+    {
+        ll pa=V[j].u;
+        ll pb=V[j].v;
+        if(find_rep(V[j].u) != find_rep(V[j].v))
+        {
+            cnt++;
+            sum+=V[j].cost;
+            rep[V[j].u]=V[j].v;
+        }
+        if(cnt==n-1) break;
+    }
+}
+int main ()
+{
+    fast();
+    ll n,e;
+    cin>>n>>e;
+    for(ll i=1;i<=e;i++)
+    {
+        ll a,b,c;
+        cin>>a>>b>>c;
+        edge g;
+        g.u=a;
+        g.v=b;
+        g.cost=c;
+        V.pb(g);
+    }
+    mst(n);
+    cout<<sum<<endl;
+
+    return 0;
+
+}
+***
+
+2.Primes Algo
+
+

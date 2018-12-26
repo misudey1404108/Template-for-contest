@@ -1,0 +1,60 @@
+*** Dp :
+
+1. Coin change problem
+/// you have to make value using given coins
+/// we can find if we can make that value and how many ways we can make that value
+/// if it is said we can use Ci times a coin to make that value then after taking a coin we will check if it is taken == Ci times ? if yes then go to next coin else take that coin again
+
+int coin[]={5,8,11,15,18}; //value of coins available
+int make=18; //we will try to make 18
+int dp[6][100];
+int call(int i,int amount)
+{
+    if(i>=5) { //All coins have been taken
+        if(amount==0)return 1;
+        else return 0;
+    }
+    if(dp[i][amount]!=-1) return dp[i][amount]; //no need to calculate same state twice
+    int ret1=0,ret2=0;
+    if(amount-coin[i]>=0) ret1=call(i,amount-coin[i]); //try to take coin i
+    ret2=call(i+1,amount); //dont take coin i
+    //(if it said IF we can make that value then )
+    return dp[i][amount]=ret1|ret2; //storing and returning.
+    //(if it said HOW MANY WAYS we can make that value then )
+	return dp[i][amount]=ret1+ret2
+}
+
+/// jodi kono coin[i] maximum have[i] time bebohar kora jai taile
+int n,make;
+int coin[100],have[100];
+ll dp[51][1010];
+
+ll call(int i,int amount)
+{
+    if(i>=n) { //All coins have been taken
+        if(amount==0)return 1;
+        else return 0;
+    }
+    if(dp[i][amount]!=-1) return dp[i][amount]; //no need to calculate  same state twice
+    int ret=0;
+    for(int take=1;take<=have[i];take++)
+        {
+            if(amount-coin[i]*take>=0)
+                ret+=call(i+1,amount-coin[i]*take)%100000007;
+                else break;
+        }
+        ret+=call(i+1,amount)%100000007;
+
+    return dp[i][amount]=ret%100000007;
+}
+
+
+int main()
+{
+    memset(dp,-1,sizeof(dp));
+    while(cin>>make)
+    {
+        cout<<call(0,make)<<endl;
+    }
+    return 0;
+}

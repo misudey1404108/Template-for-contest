@@ -1,0 +1,89 @@
+/// _|_  _|_  _|_
+
+
+struct T{
+ll a,b,block,d;
+}query[sz];
+
+bool cmp(const T &x,const T &y)
+{
+    if(x.block!=y.block) return x.a<y.a;
+    return x.b<y.b;
+}
+
+ll n,q;
+
+ll arr[sz];
+ll ans[sz];
+ll cnt[sz];
+ll current_answer=0;
+
+ void add(int x)
+{
+    current_answer -= cnt[x] * cnt[x] * x;
+    cnt[x]++;
+    current_answer += cnt[x] * cnt[x] * x;
+
+
+}
+ void remove(int x)
+{
+    current_answer -= cnt[x] * cnt[x] * x;
+    cnt[x]--;
+    current_answer += cnt[x] * cnt[x] * x;
+}
+
+
+
+int main()
+{
+    fast();
+     scanf("%d %d",&n,&q);
+    frl(i,0,n-1)  scanf("%I64d",&arr[i]);
+    ll blo=sqrt(n);
+    frl(i,0,q-1)
+    {
+        ll x,y; scanf("%I64d %I64d",&x,&y);
+        x--; y--;
+        query[i].a=x; query[i].b=y;
+        query[i].block=x/blo;
+        query[i].d=i;
+    }
+    sort(query,query+q,cmp);
+
+     ll mo_left = 0, mo_right = -1;
+
+    frl(i,0,q-1) {
+        // [left, right] is what query we must answer now.
+        ll left = query[i].a;
+        ll right = query[i].b;
+
+        while(mo_right < right) {
+            mo_right++; // cz age theke jog krso
+            //cout<<mo_right<<' ';
+            add(arr[mo_right]);
+        }
+        while(mo_right > right) {
+            remove(arr[mo_right]);
+            mo_right--; // cz age eta chilo ekon thakbe na so biyog
+        }
+        while(mo_left < left) {
+            remove(arr[mo_left]);
+            mo_left++; // cz age eta chilo ekon thakbe na so biyog
+        }
+        while(mo_left > left) {
+            mo_left--; // cz age theke jog krso
+            add(arr[mo_left]);
+        }
+
+
+        ans[query[i].d]=current_answer;
+    }
+    frl(i,0,q-1) printf("%I64d\n",ans[i]);
+
+
+
+
+
+
+}

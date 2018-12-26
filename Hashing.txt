@@ -1,0 +1,70 @@
+/// Advice1. Use double hash
+    Advice2. Use Different base p for double hash. here p is prime > distinct different element
+
+### Double Hashing
+
+map<ll,bool>n1,n2;
+string s;
+void compute_hash( ) {
+    const int p = 31;
+    const int m1 = 1e9 + 9;
+    const int m2 = 1e9 + 7;
+    long long hash_value1 = 0, hash_value2=0;
+    long long p_pow1 = 1, p_pow2 =1;
+    for (char c : s) {
+        hash_value1 = (hash_value1 + (c - 'a' + 1) * p_pow1) % m1;
+        hash_value2 = (hash_value2 + (c - 'a' + 1) * p_pow2) % m2;
+        p_pow1 = (p_pow1 * p) % m1;
+        p_pow2 = (p_pow2 * p) % m2;
+    }
+    n1[hash_value1]=true; n2[hash_value2]=true;
+}
+
+void check_hash( ) {
+    const int p = 31;
+    const int m1 = 1e9 + 9;
+    const int m2 = 1e9 + 7;
+    long long hash_value1 = 0, hash_value2=0;
+    long long p_pow1 = 1, p_pow2 =1;
+    for (char c : s) {
+        hash_value1 = (hash_value1 + (c - 'a' + 1) * p_pow1) % m1;
+        hash_value2 = (hash_value2 + (c - 'a' + 1) * p_pow2) % m2;
+        p_pow1 = (p_pow1 * p) % m1;
+        p_pow2 = (p_pow2 * p) % m2;
+    }
+    if(n1.count(hash_value1) && n2.count(hash_value2) ) cout<<"yes"<<endl;
+    else cout<<"no"<<endl;
+}
+
+##substring value find using hashing
+
+const int p = 31;
+const int m1 = 1e9+7;
+ll MMI[1000010];
+/// pre compute modular inverse for each index of string s1
+void com()
+{
+    MMI[0]=1;
+    MMI[1]=bigmod(p,m1-2,m1);
+    for(ll i=2;i<=s1.size()+3;i++)
+        MMI[i]=( MMI[i-1]* MMI[1] )% m1;
+}
+/// computing hash value for string s1
+void compute_hash2( ) {
+    //const int m1 = 1e9 + 7;
+    long long hash_value1 = 0, hash_value2=0;
+    long long p_pow1 = 1, p_pow2 =1;
+    for (int i=0;i<s1.size();i++) {
+        hash_value1 = (hash_value1 + (s1[i]- 'a' + 1) * p_pow1) % m1;
+        p_pow1 = (p_pow1 * p) % m1;
+        pre21[i]=hash_value1;
+    }
+}
+/// find hash value for substring S(l...r)
+void compute(ll l,ll r) 
+{
+      t2=pre21[r]-pre21[l-1];
+      if(t2<0) t2+=m1;
+      t2=(( t2%m1) * MMI[l] ) % m1;
+}
+

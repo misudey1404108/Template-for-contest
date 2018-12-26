@@ -1,0 +1,43 @@
+###Problem No 1.
+You are given n segments on a line. There are no ends of some segments that coincide.
+For each segment find the number of segments it contains.
+Input-
+4
+1 8
+2 3
+4 7
+5 6
+Output-
+3 // Segement 1 contains the other 3 segments
+0
+1
+0
+Solution-
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace std;
+using namespace __gnu_pbds; 
+
+typedef long long ll;
+typedef pair<int, int> ii; 
+typedef tree<int, null_type, less<int>, rb_tree_tag, 
+	tree_order_statistics_node_update> orderset; 
+const int N = 2e5 + 10; 
+struct seg { int l, r, id; } s[N]; 
+orderset st; 
+int n, ans[N];
+int main(int argc, char const *argv[]) {
+	scanf("%d", &n);
+	for(int i = 0; i < n; i++) {
+		scanf("%d %d", &s[i].l, &s[i].r); 
+		s[i].id = i; 
+	} sort(s, s + n, [](seg &a, seg &b) { return a.l < b.l; });
+	for(int i = n - 1; i >= 0; i--) {
+		ans[s[i].id] = st.order_of_key(s[i].r);
+		st.insert(s[i].r);
+	}
+	for(int i = 0; i < n; i++) 
+		printf("%d\n", ans[i]);
+}
+

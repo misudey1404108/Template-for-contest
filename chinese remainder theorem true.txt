@@ -1,0 +1,37 @@
+void extended_euclid(ll a, ll b, ll &x, ll &y, ll &g) {
+  x = 0; y = 1; g = b;
+  ll m, n, q, r;
+  for (ll u=1, v=0; a != 0; g=a, a=r) {
+    q = g / a; r = g % a;
+    m = x-u*q; n = y-v*q;
+    x=u; y=v; u=m; v=n;
+  }
+}
+/// when co prime
+ll chinese_remainder_theorem(vector<ll> ns, vector<ll> as){
+  int k  = ns.size();
+  ll N = 1, x = 0, r, s, g;
+  for (int i = 0; i < k; ++i) N *= ns[i];
+  for (int i = 0; i < k; ++i) {
+    extended_euclid(ns[i], N/ns[i], r, s, g);
+    x += as[i]*s*(N/ns[i]);
+    x %= N;
+  }
+  if (x < 0) x += N;
+  return x;
+}
+int main()
+{
+    ll t; cin>>t;
+    for(int cs=1;cs<=t;cs++)
+    {
+        vector<ll>A,M; ll n,x,y; cin>>n;
+        for(ll i=1;i<=n;i++) 
+	{
+            cin>>x>>y;
+            A.pb(x); M.pb(y);
+        }
+        ll tmp=chinese_remainder_theorem(A,M);
+        cout<<"Case "<<cs<<": "<<tmp<<endl;
+    }
+}

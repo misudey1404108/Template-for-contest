@@ -1,0 +1,853 @@
+### Templet
+
+#include<bits/stdc++.h>
+using namespace std;
+#define asgnarr(a,n) for(int i=0;i<n;i++)cin>>a[i]
+#define fast ios_base::sync_with_stdio(false)
+#define endl '\n'
+#define loop(a,b) for(int i=a;i<b;i++)
+#define mem(a,x) memset(a,x,sizeof(a))
+#define pii pair<int,int>
+#define psi pair<string,int>
+#define pss pair<string,string>
+#define pll pair<long long,long long>
+#define pls pair<long long,string>
+#define pis pair<int,string>
+#define pcc pair<char,char>
+#define pb push_back
+#define all(v) v.begin(),v.end()
+#define SF(n) scanf("%d",&n);
+#define SFF(n,m) scanf("%d %d",&n,&m)
+#define SFFF(n,m,l) scanf("%d %d %d",&n,&m,&l)
+#define SL(n) scanf("%lld",&n)
+#define SLL(n,m) scanf("%lld %lld,&n,&m)
+#define rep(i,x,n) for(int i=x;i<n;i++)
+#define rrep(i,x,n) for(int i=x;i>n;i--)
+ 
+typedef long long lli;
+typedef long li;
+typedef unsigned long long ulli;
+typedef unsigned long int uli;
+typedef unsigned int ui;
+typedef long double ld;
+ 
+inline int iseven(int x){return x&1?0:1;}
+ 
+inline bool is_double(double x)
+{
+    double y=x-(int)x;
+    return (y==x?true:false);
+}
+ 
+li bigmod(li b,li p,lli m)
+{
+    if(p==0)
+        return 1;
+    if(p%2==0)
+    {
+        return (li)pow(bigmod(b,p/2,m)%m,2)%m;
+    }
+    return (b%m*bigmod(b,p-1,m)%m)%m;
+}
+ 
+template<class T>
+ostream& operator<<(ostream &out,vector<T>v)
+{
+    for(lli i=0;i<v.size();i++)
+        out<<v[i]<<' ';
+    return out;
+}
+ 
+inline double distance(int x,int y,int a,int b)
+{
+    return sqrt(pow(x-a,2)+pow(y-b,2));
+}
+ 
+//Direction Array
+//int fx[]={1, -1, 0, 0}; int fy[]={0, 0, 1, -1};
+//int fx[]={0, 0, 1, -1, -1, 1, -1, 1}; int fy[]={-1, 1, 0, 0, 1, 1, -1, -1};
+ 
+ 
+#define LIMIT 50010
+#define inf INT_MAX
+
+
+int main()
+{
+    
+}
+
+
+
+///articulation point
+#include<bits/stdc++.h>
+using namespace std;
+
+
+#define pb push_back
+map<int,bool>visited,in_ap;
+map<int,int>start,low,par;
+int t,ap;
+
+vector<int>temp;
+void find_ap(vector<int>graph[],int u)
+{
+    visited[u]=true;
+    int x;
+    x=start[u]=low[u]=t++;
+    int cc=0,mi=INT_MAX;
+    for(int i=0;i<graph[u].size();i++)
+    {
+        int v=graph[u][i];
+        if(par[u]==v)continue;
+        if(visited[v])
+            x=mi=min(mi,low[v]);
+        else
+        {
+            par[v]=u;
+            find_ap(graph,v);
+            x=mi=min(mi,low[v]);
+            if(start[u]<=low[v] && in_ap[u]==false && par[u]!=0)
+                in_ap[u]=true,ap++;
+            cc++;
+        }
+        if(par[u]==0 && cc>1 && in_ap[u]==false)
+            in_ap[u]=true,ap++;
+    }
+    low[u]=mi;
+}
+#define pb push_back
+int main()
+{
+    int te;
+    scanf("%d",&te);
+    for(int cas=1;cas<=te;cas++)
+    {
+        int n,m;
+        scanf("%d %d",&n,&m);
+        vector<int>graph[n+1];
+        for(int i=0;i<m;i++)
+        {
+            int u,v;
+            scanf("%d %d",&u,&v);
+            graph[u].pb(v);
+            graph[v].pb(u);
+        }
+        start.clear(),low.clear(),par.clear(),visited.clear(),in_ap.clear();
+        ap=t=0;
+        find_ap(graph,1);
+
+        printf("Case %d: %d\n",cas,ap);
+    }
+}
+
+
+
+///#  BIT
+#include<bits/stdc++.h>
+using namespace std;
+
+int n;
+int tree[10000];
+
+void update(int i,int x)
+{
+    while(i<=n)
+    {
+        tree[i]+=x;
+        i+=i&(-i);
+    }
+}
+
+int query(int i)
+{
+    int sum=0;
+    while(i>0)
+    {
+        sum+=tree[i];
+        i-=i&(-i);
+    }
+    return sum;
+}
+
+
+int main()
+{
+    cin>>n;
+    int a[n];
+    for(int i=0;i<n;i++)
+    {
+        cin>>a[i];
+        update(i+1,a[i]);
+    }
+    int q;
+    cin>>q;
+
+    while(q--)
+    {
+        int x;
+        cin>>x;
+        cout<<query(x)<<endl;
+    }
+}
+
+
+
+/// JOB SCHEDULING
+
+#include<bits/stdc++.h>
+using namespace std;
+
+struct job
+{
+    int id;
+    int dead;
+    int value;
+};
+
+bool comp(job a,job b)
+{
+    return a.value>b.value;
+}
+int main()
+{
+    int n;
+    cin>>n;
+    job arr[n];
+    int max=0;
+    for(int i=0;i<n;i++)
+    {
+        cin>>arr[i].dead>>arr[i].value;
+        arr[i].id=i+1;
+        if(arr[i].dead>max)
+            max=arr[i].dead;
+    }
+    int task[max];
+    for(int i=0;i<max;i++)
+        task[i]=0;
+    int sum=0;
+    sort(arr,arr+n,comp);
+    vector<int>v;
+    for(int i=0;i<n;i++)
+    {
+        if(arr[i].value<0)
+            continue;
+        for(int j=min(max,arr[i].dead)-1;j>=0;j--)
+        {
+            if(task[j]==0)
+            {
+                task[j]=arr[i].id;
+                sum+=arr[i].value;
+                break;
+            }
+        }
+    }
+    for(int i=0;i<max;i++)
+    {
+        if(task[i]!=0)
+            cout<<task[i]<<' ';
+    }
+    cout<<endl<<sum;
+}
+
+
+
+/// KMP
+#include<bits/stdc++.h>
+using namespace std;
+
+void create_prefix_array(string pat,int prefix[])//this function is for creating the prefix-suffix array
+{
+    int n=pat.length();
+    int i,j;
+    j=0;
+    prefix[0]=0;//the first value is always zero because no suffix or prefix can be created with a string length of one
+    for(i=1;i<n;)// comparing starts between the first char and it's next char
+    {
+        if(pat[j]==pat[i])
+        {
+            prefix[i]=j+1;//if they match we can see that the previous chars also matched
+            j++,i++; // if they match we increment both i and j for next comparison
+        }
+        else if(j==0) // if they don't match and we are stil comparing with the first char than there is room to go behind so it's value is zero
+            prefix[i++]=0;
+        else
+            j=prefix[j-1];//if they don't match and j!=0 than this is a way to find the position of the char where we can find the longest substring both behind i and jth chars
+    }
+}
+
+int find_match(string text,string pat,int prefix[])
+{
+    int i,j,m,n;
+    m=text.length();
+    n=pat.length();
+    create_prefix_array(pat,prefix);
+    j=0;
+    for(i=0;i<m && j<n;)
+    {
+        if(text[i]==pat[j])
+        {
+            i++,j++;// if they match than,we go to the next char to find if they match
+        }
+        else if(j==0)
+            i++; //if they don't match and there is no room to go back that is j=0 then we just increment i
+        else
+            j=prefix[j-1];/* if they don't match we need
+                            to find the suffinx which is also a prefix until
+                            the previous char of pat,which will help us not to
+                            look behind i in the text array. this way we don't
+                            have to compare the prefix that matched with the
+                            suffix becuse the suffix matches the chars before
+                             the ith char and the suffix == prefix that means
+                              the prefix is already matched we just have to see
+                              if the next char matches after the prefix
+                            */
+    }
+    if(j==n)
+        return i-n;
+    else
+        return -1;
+}
+
+int main()
+{
+    string text="abxabcabcaby",pat="abcaby";
+    int prefix[100];
+    int x=find_match(text,pat,prefix);
+    if(x==-1)
+        cout<<"No match found";
+    else
+        cout<<"Match found in position "<<x;
+}
+
+
+
+
+/// LCA
+
+#include<bits/stdc++.h>
+using namespace std;
+
+#define pb push_back
+int parent[20][100000];
+int lvl[100000];
+int n,e;
+
+void creatSpares()
+{
+    for(int j=1;1<<j<n;j++)/// j loop must be above i loop
+    {
+        for(int i=1;i<=n;i++)
+        {
+            parent[j][i]=parent[j-1][parent[j-1][i]];
+            ///if max edge is needed between two edges
+            //maximum[j][i]=max(maximum[j-1][i],maximum[j-1][parent[j-1][i]]);
+            //minimum[j][i]=min(minimum[j-1][i],minimum[j-1][parent[j-1][i]]);
+        }
+    }
+}
+
+int LCA(int u,int v)
+{
+    if(lvl[u]<lvl[v])
+        swap(u,v);
+    for(int i=18;i>=0;i--)
+    {
+        int x=lvl[u]-(1<<i);
+        if(lvl[u]-(1<<i)>=lvl[v])
+            u=parent[i][u];
+    }
+    for(int i=18;i>=0;i--)
+    {
+        if(parent[i][u]!=0 && parent[i][u]!=parent[i][v])
+            u=parent[i][u],v=parent[i][v];
+
+    }
+    return parent[0][u];
+    /// if u or v is 1 then 0 would be returned
+}
+int main()
+{
+    cin>>n>>e;
+    vector<int>graph[n+1];
+    for(int i=0;i<e;i++)
+    {
+        int u,v;
+        cin>>u>>v;
+        graph[u].pb(v);
+    }
+    memset(lvl,-1,sizeof(lvl));
+    ///root is 1
+    lvl[1]=0;
+    queue<int>q;
+    q.push(1);
+    while(!q.empty())
+    {
+        int u=q.front();
+        q.pop();
+        for(int v:graph[u])
+        {
+            if(lvl[v]==-1)
+            {
+                lvl[v]=lvl[u]+1;
+                q.push(v);
+                parent[0][v]=u;
+            }
+        }
+    }
+    int m;
+    cin>>m;
+    for(int i=0;i<m;i++)
+    {
+        int u,v;
+        cin>>u>>v;
+        creatSpares();
+        cout<<LCA(u,v)<<endl;
+    }
+
+}
+
+
+///MAX FLOW
+
+#include<bits/stdc++.h>
+using namespace std;
+
+#define limit 20000
+#define pb push_back
+int graph[limit][limit];
+map<int,int>par;
+
+bool bfs(int s,int d)
+{
+    bool visited[limit]={0};
+    queue<int>q;
+    q.push(s);
+    visited[s]=true;
+    while(!q.empty())
+    {
+        int u=q.front();
+        q.pop();
+        for(int i=0;i<limit;i++)
+        {
+            if(visited[i]==false && graph[u][i]>0)
+            {
+                visited[i]=true;
+                q.push(i);
+                par[i]=u;
+                if(i==d)
+                    return true;
+            }
+        }
+    }
+    return false;
+}
+int main()
+{
+    int n,m;
+    cin>>n>>m;
+    memset(graph,0,sizeof(graph));
+    for(int i=0;i<m;i++)
+    {
+        int u,v,c;
+        cin>>u>>v>>c;
+        graph[u][v]=c;
+    }
+    int s,d;
+    cin>>s>>d;
+    int max_flow=0;
+    par.clear();
+    while(bfs(s,d))
+    {
+        int min=100000;
+        int v=d;
+        vector<int>path;
+        path.pb(d);
+        while(v!=s)
+        {
+            int u=par[v];
+            if(graph[u][v]<min)
+                min=graph[u][v];
+            v=u;
+            path.pb(v);
+        }
+        v=d;
+        max_flow+=min;
+        while(v!=s)
+        {
+            int u=par[v];
+            graph[u][v]-=min;
+            graph[v][u]+=min;
+            v=u;
+        }
+        reverse(path.begin(),path.end());
+        for(int x:path)
+            cout<<x<<' ';
+        cout<<endl;
+        par.clear();
+    }
+    cout<<max_flow;
+}
+
+
+
+/// sub array sum
+
+#include<bits/stdc++.h>
+using namespace std;
+
+#define inf 10000000
+int max_cross_sum(int a[],int low,int mid,int high)
+{
+    int lsum=-inf;
+    int sum=0;
+    for(int i=mid;i>=low;i--)
+    {
+        sum+=a[i];
+        if(sum>lsum)
+            lsum=sum;
+    }
+    int rsum=-inf;
+    sum=0;
+
+    for(int i=mid+1;i<=high;i++)
+    {
+        sum+=a[i];
+        if(sum>rsum)
+            rsum=sum;
+    }
+    lsum=max(lsum,max(rsum,lsum+rsum));
+}
+
+int max_subarray_sum(int a[],int low,int high)
+{
+    if(low==high)
+        return a[low];
+    int mid=(low+high)/2;
+    int lsum=max_subarray_sum(a,low,mid);
+    int rsum=max_subarray_sum(a,mid+1,high);
+    int csum=max_cross_sum(a,low,mid,high);
+    return max(lsum,max(rsum,csum));
+}
+int main()
+{
+    int n;
+    cin>>n;
+    int a[n];
+    for(int i=0;i<n;i++)
+        cin>>a[i];
+    cout<<max_subarray_sum(a,0,n-1);
+}
+
+
+///SEGMENT TREE WITH LAZY
+#include<bits/stdc++.h>
+using namespace std;
+#define MAX_SIZE 10000
+
+#define left(n) n*2+1
+#define right(n) n*2+2
+
+int a[MAX_SIZE];
+int tree[MAX_SIZE*4];
+int prop[MAX_SIZE*4]; ///2^[log2(array_size)+1]-1 which is aprox to 4&array_size
+int n;
+
+void creat_tree(int node,int low,int high)
+{
+    if(low==high)///leaf node reached
+    {
+        tree[node]=a[low];
+        return ;
+    }
+    int left=2*node+1;
+    int right=2*node+2;
+    int mid=(low+high)/2;
+    creat_tree(left,low,mid);
+    creat_tree(right,mid+1,high);
+    tree[node]=tree[left]+tree[right];
+}
+
+int query(int node,int l,int r,int i,int j)
+{
+    int a;
+    if(prop[node]!=0)
+    {
+        int x=prop[node];
+        a=tree[node]+=(r-l+1)*x;///updating actual tree node
+        if(l!=r)///if(l==r) = leaf node
+        {
+            prop[left(node)]+=x;///passing propagation value to it's children
+            prop[right(node)]+=x;
+        }
+        prop[node]=0;
+    }
+    if(l>j || r<i)return 0;
+    if(l>=i && r<=j)
+    {
+        return tree[node];
+    }
+    int mid=(l+r)/2;
+    int p1=query(left(node),l,mid,i,j);
+    int p2=query(right(node),mid+1,r,i,j);
+    return p1+p2;
+}
+
+void update(int node,int l,int r,int i,int j,int x)
+{
+    int a;
+    if(prop[node]!=0)
+    {
+        a=tree[node]+=(r-l+1)*prop[node];
+        if(l!=r)
+        {
+            a=prop[left(node)]+=prop[node];
+            a=prop[right(node)]+=prop[node];
+        }
+        prop[node]=0;
+    }
+    if(l>j || r<i)return;
+    if(l>=i && r<=j)
+    {
+        a=tree[node]+=(r-l+1)*x;
+        if(l!=r)
+        {
+            prop[left(node)]+=x;
+            prop[right(node)]+=x;
+        }
+        return;
+    }
+    int mid=(l+r)/2;
+    update(left(node),l,mid,i,j,x);
+    update(right(node),mid+1,r,i,j,x);
+    a=tree[left(node)]+tree[right(node)];
+    tree[node]=a;
+}
+
+int main()
+{
+    cin>>n;
+    for(int i=0;i<n;i++)
+        cin>>a[i];
+    creat_tree(0,0,n-1);
+    int m;
+    while(cin>>m,m)
+    {
+        if(m==1)///query
+        {
+            int i,j;
+            cin>>i>>j;
+            cout<<query(0,0,n-1,i,j)<<endl;
+        }
+        else
+        {
+            int i,j,x;
+            cin>>i>>j>>x;
+            update(0,0,n-1,i,j,x);///update in range i-j
+        }
+    }
+}
+
+
+
+ ## BIT/segment_tree all increasing subsequences
+ 
+	naive approch will be
+	
+	to take an element, find all previoues element's value that is smaller than current element and add 1
+		to each of them
+	
+	for(i=0 to n)
+	{
+		for(j=0 to i)
+		{
+			if(a[i]>a[j])
+				dp[i]+=dp[j]+1;
+		}
+	}
+	
+	we can redues the inner loop using BIT/segment_tree
+		in every node of the tree we'll store the number of subsequences that end with that value
+		
+	example input : 1 3 2 1
+	position      : 1 2 3 4
+	1. give them new position to avoid same element calculation because
+		the elements that have value will have the same sequences
+		
+		arr: 1 3 2 1
+		pos: 1 2 3 1
+	
+	2.sort in increasing order
+		arr: 1 1 2 3
+		pos: 1 1 3 2
+		
+	3.take every element index find number of sequences in their index and add 1 then update the
+		value of current index
+		
+		example : if we take the last element 3 position 2
+					there are two sequences in previoues position 1 which is 
+					1 and 1
+					since we will save the sequences that end with current value those will be
+					1 3 and 1 3
+					this number would be found in the previoues index 
+					and we add 1 because 3 itself is a subsequences which ends with 3
+		
+	
+	
+
+ ## find common path length of 2 source and 1 destination in a TREE
+ 
+	if source A and b
+		destination C
+	then common path length will be
+		(path_length(AtoC)+path_length(BtoC)-path_length(AtoB)+1)/2
+		
+		explaination::
+			here path_length gives the number of nodes that is in path A to C (counting A)
+			when we do path_length AtoC+BtoC then the common path will be counted twice and
+			if the LCA(A,B) is X then path A-X and X-B will be added as well
+			that why we subtract path A-B but if we do this the node X will be subtracted as will 
+			which can not be allowed that is why we need to add 1 to the result
+			
+			now since all the nodes in the result was counted twice we devide the by 2 which is our answer
+			
+
+
+## find number of digits in N!
+
+	we know number of digits in N is log10(N)+1
+	
+	so digits in N! will be log10(N!) or log10(N)+log10(N-1)+...+log10(2)+log10(1)+1
+	
+## find number of digits in N! after converting in base B
+
+	logB(N!)+1=ln(N!)/ln(B)+1
+
+
+
+## floyed warshol
+
+for k from 1 to |V|
+      for i from 1 to |V|
+         for j from 1 to |V|
+            if matrix[i][k] + matrix[k][j] &lt; matrix[i][j] then
+               matrix[i][j] ? matrix[i][k] + matrix[k][j]
+               next[i][j] ? next[i][k]
+
+
+findPath(i, j)
+   path = [i]
+   while i ? j
+       i ? next[i][j]
+       path.append(i)
+   return path
+
+
+	
+
+number of digit in N is log(N)+1
+
+so number of dimit in N! will be log(N)+log(N-1)+......+log(2)+log(1)+1
+
+
+
+
+	## ODD CYCLE THEORY IN SCC
+	
+		if there is an odd cycle in a scc then all the vertices
+		is that scc will be included in an odd cycle
+
+
+	
+1.  equations for finding the number of palindrom of n digit
+
+	* if n is odd  then ans= 9*10^(n/2-1);
+	* if n is even then ans= 9*10^((n-1)/2;
+
+
+problem :: rotate point A around point B 90 degree clockwise or counter clockwise;
+
+
+solve :: 1.subtract point Ax-Bx and Ay-By
+	 2. rotate the points (x,y)
+		for clock wise transform to (y,-x)
+		for counter clockwise (-y,x)  ,,,,,,final equation will be (-Ay+By+Bx,Ax-Bx+By)
+	3.add point Ax+Bx and Ay+By
+
+
+
+ ## sliding window maximum
+ 
+	given an array a[]={8, 5, 10, 7, 9, 4, 15, 12, 90, 13} 
+	and a value k find all maximum value in all subarray of size k
+	
+	
+	algorithm:
+	
+	here DQ is a deque which will store the indexes of array a[]
+	1. for(i=0 to k)
+			while(!DQ.empty() && a[i]>=a[DQ.back()])
+				DQ.pop_back()
+			DQ.push_back(a[i])
+			
+			//here we first take the first subarray of size k 
+			//insert elements from behind so that there is no smaller element in its left side
+			//this way the deque remains sorted
+	
+	2. for(i=i to n)//processing remaining elements
+			//here the front element of deque will be the maximum value of previous window
+			while(!DQ.empty() && DQ.front()<=i-k)
+				DQ.pop_front()
+				//here we remove all element which is not inside current window
+			
+			while(!DQ.empty() && a[i]>=a[DQ.back()])
+				DQ.pop_back()
+			DQ.push_back(a[i])
+			
+			//here we first take the first subarray of size k 
+			//insert elements from behind so that there is no smaller element in its left side
+			//this way the deque remains sorted
+			
+		end
+		
+		
+		
+		//by removng smaller elements from behind we keep deque sorted and find maximum value in front
+		
+		
+		
+	## this algorithm can be used to solve problem LIGHTOJ 1093
+	
+
+
+
+
+## XOR
+
+1. it's an odd function;
+
+2.x^0=x;  when x is xor with 0 we get back x;
+
+3.x^1= -x ; when x is xor with 0 we get the negetive of x;
+
+4.x^x= 0 ; when x is xor with x we get zeor(0)
+
+5.   if a^b=x
+     then a^x=b; and x^b=a;
+
+6. if we xor x 1024 times with y we will find x again
+
+ **swap with xor 
+ 
+ swap(x,y)
+ {
+	//befor x==x and y==y
+	x=x^y;  //after this instruction x==x^y and y==y 
+	y=x^y; // x==x^y and y==x^y^y==x
+	x=x^y;	// x==x^y^x==y and y=x
+	
+	//finaly x==y and y==x;
+ }
+
+
+

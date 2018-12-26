@@ -1,0 +1,56 @@
+
+/// Subset sum
+
+vector<int>s;
+int n = s.size() ;
+int results[ ( 1 << n ) ] ;     // ( 1 << n )= 2^n
+//initialize results to 0
+memset( results, 0, sizeof( results ) ) ;
+// iterate through all subsets
+for( int i = 0 ; i < ( 1 << n ) ; ++ i ) {    // for each subset, O(2^n)
+    for ( int j = 0; j < n ; ++ j ) {       // check membership, O(n)
+          i f ( ( i & ( 1 << j ) ) ! = 0 )    // test if bit ‘j’ is turned on in subset ‘i’?.
+							 // if result != 0 then it is on otherwise off.
+                results[i] += s [j] ;          // if yes, process ‘j’
+               }
+         }
+
+/// Inclusion Exclusion principle
+#n(A + B) = n(A)+n(B)-n(A&B)
+#n(A+ B+ C)=n(A)+n(B)+n(C)-n(A&B)-n(B&C)-n(C&A)+n(A&B&C)
+#n(A+B+C)'= 1-n(A+B+C)
+
+Suppose we have 1 to 100 numbers. How many numbers are not divisible by 2 or 5 ?
+Iterate through loops cause O(100). But using inclusion exclusion principle we can do it in  O(4).
+First find out whose numbers are divisible by 2. Then find out whose numbers are divisible by 3. Sum those numbers.
+Then find out whose numbers are divisible by lcm of 2 & 3, Its 6. Then substract those numbers.
+Basically if total no of elements is odd then add, if even then subtract.
+Result is those numbers which are divisible by 2 or 3.
+Then n- result is our ans.
+
+	// Here n is 100 and k is sizeofarray(2 & 5).
+	ll n,k,ans=0;
+        cin>>n>>k;
+        for(ll i=0;i<k;i++) cin>>a[i];
+        for(ll i=0;i<(1<<k);i++)
+        {
+            ll ck=0,lc=-1;
+            for(ll j=0;j<k;j++)
+            {
+                if(i &(1<<j))
+                {
+                    if(lc==-1) lc=a[j];
+                    else lc=lcm(lc,a[j]);
+                    ck++;
+
+                }
+            }
+            if(lc!=-1)
+            {if(ck&1) ans+=n/lc;
+            else ans-=n/lc;
+
+            }
+
+        }
+        cout<<n-ans<<endl;
+

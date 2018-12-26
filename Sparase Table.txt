@@ -1,0 +1,30 @@
+/// Range Minimum Query using sparse table
+/// Time Complexity(O(nlogn))
+ll sparse[100005][20];
+ll arr[100005];
+
+/// making sparse table in nlogn
+void make(ll n){
+    //memset(sparse,-1,sizeof(sparse));
+    for(ll i=0;i<n;i++) sparse[i][0]=i;
+    for(ll j=1;(1<<j)<=n;j++){
+        for(ll i=0;(i+(1<<j)-1)<n;i++){
+
+            if(arr[sparse[i][j-1]] < arr[sparse[i+(1<<(j-1))][j-1]])
+			/// je duita index niye kaj krbo tar moddo 				konta minimum oita check krtisi
+             sparse[i][j]=sparse[i][j-1]; /// minimum valuer index 							raktisi eikhane
+            else sparse[i][j]=sparse[i+(1<<(j-1))][j-1]; 
+			/// minimum valuer index raktisi eikhane
+
+
+    }
+}}
+/// returning value in O(1)
+ll RmQ(ll low,ll high){
+    ll l=high-low+1;
+    ll k=log2(l);
+    return min(arr[sparse[low][k]],arr[sparse[low+l-(1<<k)][k]]) ;
+    /// je duita index niye kaj krbo tar moddo konta minimum oita 		return krtisi
+
+}
+

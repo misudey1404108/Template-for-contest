@@ -1,0 +1,66 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+void create_prefix_array(string pat,int prefix[])//this function is for creating the prefix-suffix array
+{
+    int n=pat.length();
+    int i,j;
+    j=0;
+    prefix[0]=0;//the first value is always zero because no suffix or prefix can be created with a string length of one
+    for(i=1;i<n;)// comparing starts between the first char and it's next char
+    {
+        if(pat[j]==pat[i])
+        {
+            prefix[i]=j+1;//if they match we can see that the previous chars also matched
+            j++,i++; // if they match we increment both i and j for next comparison
+        }
+        else if(j==0) // if they don't match and we are stil comparing with the first char than there is room to go behind so it's value is zero
+            prefix[i++]=0;
+        else
+            j=prefix[j-1];//if they don't match and j!=0 than this is a way to find the position of the char where we can find the longest substring both behind i and jth chars
+    }
+}
+
+int find_match(string text,string pat,int prefix[])
+{
+    int i,j,m,n;
+    m=text.length();
+    n=pat.length();
+    create_prefix_array(pat,prefix);
+    j=0;
+    for(i=0;i<m && j<n;)
+    {
+        if(text[i]==pat[j])
+        {
+            i++,j++;// if they match than,we go to the next char to find if they match
+        }
+        else if(j==0)
+            i++; //if they don't match and there is no room to go back that is j=0 then we just increment i
+        else
+            j=prefix[j-1];/* if they don't match we need
+                            to find the suffinx which is also a prefix until
+                            the previous char of pat,which will help us not to
+                            look behind i in the text array. this way we don't
+                            have to compare the prefix that matched with the
+                            suffix becuse the suffix matches the chars before
+                             the ith char and the suffix == prefix that means
+                              the prefix is already matched we just have to see
+                              if the next char matches after the prefix
+                            */
+    }
+    if(j==n)
+        return i-n;
+    else
+        return -1;
+}
+
+int main()
+{
+    string text="abxabcabcaby",pat="abcaby";
+    int prefix[100];
+    int x=find_match(text,pat,prefix);
+    if(x==-1)
+        cout<<"No match found";
+    else
+        cout<<"Match found in position "<<x;
+}

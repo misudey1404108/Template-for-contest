@@ -1,0 +1,297 @@
+### Finding max and min xor in subarray using trie
+struct node {
+    int value;
+    node* next[2];
+    node()
+    {
+        value=0;
+        for (int i = 0; i < 2; i++)
+            next[i] = NULL;
+    }
+} * root;
+int xo;
+void insert(int p)
+{
+    node* curr = root;
+    // Start from the msb, insert all bits of
+    // pre_xor into Trie
+    for (int i=32-1; i>=0; i--)
+    {
+        // Find current bit in given prefix
+        bool val = p & (1<<i);
+        // Create a new node if needed
+        if (curr->next[val] == NULL)
+            curr->next[val] = new node();
+ 
+        curr = curr->next[val];
+    }
+ 
+    // Store value at leaf node
+    curr->value = p;
+}
+// Finds the maximum XOR ending with last number in
+// prefix XOR 'pre_xor' and returns the XOR of this maximum
+// with pre_xor which is maximum XOR ending with last element
+// of pre_xor.
+int search_max(int pre_xor)
+{
+    node *curr = root;
+    for (int i=32-1; i>=0; i--)
+    {
+        // Find current bit in given prefix
+        bool val = pre_xor & (1<<i);
+ 
+        // Traverse Trie, first look for a
+        // prefix that has opposite bit
+        if (curr->next[1-val]!=NULL)
+            curr = curr->next[1-val];
+ 
+        // If there is no prefix with opposite
+        // bit, then look for same bit.
+        else if (curr->next[val] != NULL)
+            curr = curr->next[val];
+    }
+    return pre_xor^(curr->value);
+}
+// find the minimum xor
+int search_min(int pre_xor)
+{
+    node *curr = root;
+    for (int i=32-1; i>=0; i--)
+    {
+        // Find current bit in given prefix
+        bool val = pre_xor & (1<<i);
+ 
+        // Traverse Trie, first look for a
+        // prefix that has same bit
+        if (curr->next[val]!=NULL)
+            curr = curr->next[val];
+ 
+        // If there is no prefix with opposite
+        // bit, then look for opposite bit.
+        else if (curr->next[1-val] != NULL)
+            curr = curr->next[1-val];
+    }
+    return pre_xor^(curr->value);
+}
+ 
+void del(node* cur)
+{
+    for (int i = 0; i < 2; i++)
+        if (cur->next[i])
+            del(cur->next[i]);
+ 
+    delete (cur);
+}
+int a[50010];
+ int main()
+{
+    fast();
+    int t,n,x,mx,mn; cin>>t;
+    for(int ia=1;ia<=t;ia++)
+    {
+    root=new node();
+    cin>>n;
+    insert(0);
+    xo=0;
+    int mn=1e9,mx=-1e9;
+    for(int j=1;j<=n;j++)
+    {
+        cin>>x;
+        xo^=x;
+        mn=min( search_min(xo),mn);
+        mx=max( search_max(xo) ,mx);
+        //cout<<mx<<' '<<mn<<endl;
+        insert(xo);
+    }
+    cout<<"Case "<<ia<<": "<<mx<<' '<<mn<<endl;
+    del(root);
+    }
+}
+
+### A trie problem. Insert some element in multiset and erase one occurance then find maximum xor of given value xor any element from the multiset
+
+struct node {
+    int value;
+    int ck[2];
+    node* next[2];
+    node()
+    {
+        value=0;
+        for (int i = 0; i < 2; i++)
+            next[i] = NULL, ck[i]=0;
+    }
+} * root;
+int xo;
+void insert(int p)
+{
+    node* curr = root;
+    // Start from the msb, insert all bits of
+    // pre_xor into Trie
+    for (int i=32-1; i>=0; i--)
+    {
+        // Find current bit in given prefix
+        bool val = p & (1<<i);
+        // Create a new node if needed
+        if (curr->next[val] == NULL)
+            curr->next[val] = new node();
+        curr->ck[val]++;
+        curr = curr->next[val];
+        //cout<<p<<' '<<curr->ck<<endl;
+    }
+
+    // Store value at leaf node
+    curr->value = p;
+}
+void delet(int p)
+{
+    node* curr = root;
+    node * tmp;
+
+    for (int i=32-1; i>=0; i--)
+    {
+        bool val = p & (1<<i);
+        tmp=curr;
+        curr->ck[val]--;
+        curr = curr->next[val];
+    }
+
+}
+int search_max(int pre_xor)
+{
+    node *curr = root;
+    for (int i=32-1; i>=0; i--)
+    {
+        // Find current bit in given prefix
+        bool val = pre_xor & (1<<i);
+
+        // Traverse Trie, first look for a
+        // prefix that has opposite bit
+        if (curr->next[1-val]!=NULL && curr->ck[1-val]>0)
+            curr = curr->next[1-val]; //cout<<1-val<<' ';
+
+        // If there is no prefix with opposite
+        // bit, then look for same bit.
+        else if (curr->next[val] != NULL & curr->ck[val]>0)
+            curr = curr->next[val]; //cout<<val<<' ';
+    }
+    return pre_xor^(curr->value);
+}
+int main()
+{
+    fast();
+    ll t,x,p; cin>>t;
+    char ch;
+    root=new node();
+    insert(0);
+    for(ll i=1;i<=t;i++)
+    {
+        cin>>ch>>x;
+        //cout<<ch<<' '<<x<<endl;
+        if(ch=='+') insert(x);
+        else if(ch=='-') delet(x);
+        else
+        {
+            p=search_max(x);
+            cout<<p<<endl;
+        }
+    }
+}
+
+### Finding total number of subarray which xor is less than k
+
+ll n,k,x,xo=0;
+struct node {
+    int value;
+    node* next[2];
+    ll p[2];
+    node()
+    {
+        value=0;
+        for (int i = 0; i < 2; i++)
+            next[i] = NULL, p[i]=0;
+    }
+} * root;
+void insert(int p)
+{
+    node* curr = root;
+    // Start from the msb, insert all bits of
+    // pre_xor into Trie
+    for (int i=32-1; i>=0; i--)
+    {
+        // Find current bit in given prefix
+        bool val = p & (1<<i);
+        // Create a new node if needed
+         curr->p[val]++;
+        if (curr->next[val] == NULL)
+            curr->next[val] = new node();
+
+        curr = curr->next[val];
+    }
+
+    // Store value at leaf node
+    curr->value = p;
+}
+ll mx=0;
+ll search_less_than(node *curr)
+{
+    if(curr == NULL)
+        return 0;
+    ll res = 0;
+    for(int i=31;i>=0;i--)
+    {
+        bool ch1=k & (1<<i);
+        bool ch2=xo & (1<<i);
+        if(ch1)
+        {
+            if(ch2){
+                res+=curr->p[1];
+                if(curr->next[0] == NULL)
+                    return res;
+                curr = curr->next[0];
+            }
+
+            else{
+                res+=curr->p[0];
+                if(curr->next[1] == NULL)
+                    return res;
+                curr = curr->next[1];
+            }
+        }
+        else
+        {
+            if(ch2){
+                if(curr->next[1] == NULL)
+                    return res;
+                curr=curr->next[1];
+            }
+            else{
+                if(curr->next[0] == NULL)
+                    return res;
+                curr=curr->next[0];
+            }
+        }
+    }
+    return res;
+}
+
+int main()
+{
+    fast();
+    root=new node();
+    cin>>n>>k;
+    insert(0);
+    for(int i=1;i<=n;i++)
+    {
+        cin>>x;
+        xo^=x;
+        mx+=search_less_than(root);
+        //cout<<mx<<endl;
+        insert(xo);
+    }
+    ll tmp=mx;
+    cout<<tmp;
+}
+
+
+

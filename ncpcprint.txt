@@ -1,0 +1,158 @@
+// in out dp 
+// here finding height of ith tree when root is ith node
+vector<ll> g[100010];
+ll a[100010], in[100010], out[100010], dp[100010];
+
+void dfs1(ll u, ll par){
+	in[u] = 0;
+	for(ll v:g[u]){
+		if (v == par) continue;
+		dfs1(v, u);
+		in[u] = max(in[u], 1+in[v]);
+	}
+}
+void dfs2(ll u, ll par){
+	ll mx1=-1, mx2=-1;
+
+    //find top 2 maximum values of in[v]
+    for(ll v: g[u]){
+            if(v == par) continue;
+            if(in[v] >= mx1) mx2 = mx1, mx1 = in[v];
+            else if(in[v] > mx2) mx2 = in[v];
+    }
+	for(ll v:g[u]){
+		if (v == par) continue;
+		ll use = mx1;
+
+		if(mx1 == in[v])
+			use = mx2;
+
+		out[v] = max(1+out[u], 2+use);
+
+		dfs2(v, u);
+	}
+}
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	ll i,n,k,j,u,v;
+	cin >> n;
+	for(i=1;i<n;i++){
+		cin >> u >> v;
+		g[u].pb(v);
+		g[v].pb(u);
+	}
+	dfs1(1, 0);
+	dfs2(1, 0);
+
+	for(i=1;i<=n;i++){
+		dp[i] = max(in[i], out[i]);
+		cout << dp[i] << " " ;
+	}
+	return 0;
+}
+
+/// to convert tree to array. every subtree of a node will remain between starting time and endong time
+ll Time=0;
+ll dfs(ll u){
+    st[u]=++Time;
+    A[Time]=t[u];
+
+    for(int i=0;i<V[u].size();i++) dfs(V[u][i]);
+    en[u]=Time;
+}
+
+/// Bitmask dp. travellng salesman problem. Shafeat blog
+
+int Set(int N,int pos){return N=N | (1<<pos);}
+int reset(int N,int pos){return N= N & ~(1<<pos);}
+bool check(int N,int pos){return (bool)(N & (1<<pos));}
+
+int w[20][20];
+int n;
+int dp[(1<<15)+2];
+int call(int mask)
+{
+	if(mask==(1<<n)-1) return 0;
+	if(dp[mask]!=-1) return dp[mask];
+	int mn=1<<28;
+	for(int i=0;i<n;i++)
+	{
+		if(check(mask,i)==0)
+		{
+			int price=w[i][i];
+			for(int j=0;j<n;j++)
+			{
+				if(i!=j and check(mask,j)!=0)
+				{
+					price+=w[i][j];
+				}
+			}
+			int ret=price+call(Set(mask,i));
+			mn=min(mn,ret);
+			
+		}
+	}
+	return dp[mask]=mn;
+}
+int main()
+{
+		mem(dp,-1);
+		cin>>n;
+		for(int i=0;i<n;i++)
+		{
+			for(int j=0;j<n;j++)
+			{
+				scanf("%d",&w[i][j]);
+		
+			}
+		}
+		int ret=call(0);
+		printf("%d\n",ret);
+		return 0;
+}
+
+/// kefa and dishes.Codeforces problem
+
+int n,m,k;
+ll s[20];
+map< pair<int,int>,ll>Ma;
+ll dp[1<<20][20];
+int Set(int N,int pos){return N=N | (1<<pos);}
+int reset(int N,int pos){return N= N & ~(1<<pos);}
+bool check(int N,int pos){return (bool)(N & (1<<pos));}
+
+ll call(int mask,int att)
+{
+	if(__builtin_popcount(mask)==m) return 0LL;
+	if(mask==(1<<n)-1 || att>n) return 0LL;
+	if(dp[mask][att]!=-1) return dp[mask][att];
+	ll mx=0;
+	for(int i=1;i<=n;i++)
+	{
+		if(check(mask,i)==0)
+        {
+            ll tpp= call( Set(mask,i), i) +s[i]+ Ma[ mp(att,i) ];
+           // cout<<tpp<<endl;
+            mx=max(mx,tpp);
+		}
+	}
+	return dp[mask][att]=mx;
+}
+int main()
+{
+    fast();
+    cin>>n>>m>>k;
+    memset(dp,-1,sizeof(dp));
+    for(int i=1;i<=n;i++) cin>>s[i];
+    int a,b,c;
+    for(int i=1;i<=k;i++)
+    {
+        cin>>a>>b>>c;
+        Ma[mp(a,b)]=c;
+    }
+    ll ans=call(0,0);
+    cout<<ans<<endl;
+    return 0;
+}
