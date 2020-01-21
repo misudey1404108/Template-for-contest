@@ -1,0 +1,153 @@
+/// Code
+
+struct node
+{
+    int data;
+    node* next;
+}* root;
+node* insert_beg(node* head,int val)
+{
+    node* tmp;
+    tmp=new node();
+    tmp->data=val;
+    tmp->next=head;
+    head=tmp;
+    return head;
+}
+node* insert_end(node* head,int val)
+{
+    node* tmp;
+    node* prev;
+    tmp=new node();
+    tmp->data=val;
+    tmp->next=NULL;
+    node* curr=head;
+    if(curr==NULL) head=tmp;
+    else
+    {
+    while(curr!=NULL) prev=curr, curr=curr->next;
+    prev->next=tmp;
+    }
+    return head;
+}
+node* insert_specific(node* head,int val,int sear)
+{
+    node* tmp;
+    node *tt;
+    tmp=new node();
+    tmp->data=val;
+    tmp->next=NULL;
+    node* curr=head;
+    while(curr!=NULL)
+    {
+        if(curr->data==sear)
+        {
+            tt=curr->next;
+            curr->next=tmp;
+            tmp->next=tt;
+            break;
+        }
+        curr=curr->next;
+    }
+    return head;
+}
+
+void traverse(node *head)
+{
+    node* curr=head;
+    while(curr!=NULL)
+    {
+        cout<<curr->data<<endl;
+        curr=curr->next;
+    }
+}
+int main()
+{
+    root=new node();
+    root=NULL;
+    int n; cin>>n;
+    for(int i=0;i<n;i++)
+    {
+        cin>>a[i];
+        root=insert_end(root,a[i]);
+    }
+    traverse(root);
+
+
+
+
+}
+
+/// how to create a link list in c++
+struct node
+{
+   int data;
+   node* next;
+
+}*root;
+
+root=new node();
+
+
+
+/// Print elements of link list
+
+Node* curr =head;
+while(curr!=NULL)
+{
+cout<<curr->data<<endl;
+curr=curr->next;
+}
+
+/// Reverse a link list
+
+Take three pointers prev,curr,next;
+prev=NULL; curr=current node; next=next node of current node;
+
+SinglyLinkedListNode* reverse(SinglyLinkedListNode* head) {
+    SinglyLinkedListNode* prev=NULL;
+    SinglyLinkedListNode* curr=head;
+     SinglyLinkedListNode* next;
+     while(curr!=NULL)
+     {
+         next=curr->next;
+         curr->next=prev;
+         prev=curr;
+         curr=next;
+     }
+     head=prev;
+     return head;
+
+/// deleting a certain position in a linked list
+
+SinglyLinkedListNode* deleteNode(SinglyLinkedListNode* head, int position) {
+    SinglyLinkedListNode* curr=head;
+    SinglyLinkedListNode* prev=NULL;
+    int ck=0;
+    while(curr!=NULL)
+    {
+        if(ck==position)
+        {
+            if(position==0) head=curr->next;
+            else prev->next=curr->next;
+            break;
+        }
+        prev=curr;
+        curr=curr->next;
+        ck++;
+    }
+    return head;
+
+}
+
+/// finding cycle in a link list
+
+first technique: mark every node and if any node found which has previously seen then there is a cycle.
+Second technique: take two pointers. first pointer move by two and second pointer move by one. If there is a collide then there is a cycle.
+
+///The major difference between the singly linked list and the doubly linked list is the ability to traverse.
+You cannot traverse back in a singly linked list because in it a node only points towards the next node and there is no pointer to the previous
+node.On the other hand, the doubly linked list allows you to navigate in both directions in any linked list because it maintains two pointers 
+towards the next and previous node.
+
+
